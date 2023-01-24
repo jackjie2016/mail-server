@@ -1,0 +1,38 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+# https://www.jianshu.com/p/ac18956b0bc0
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod tidy
+    # you may remove this if you don't need go generate
+    - go generate ./...
+builds:
+  - env:
+      - CGO_ENABLED=1
+      - GO111MODULE=on
+      - CC=x86_64-linux-musl-gcc
+    goos:
+      - linux
+      - darwin
+      - windows
+archives:
+
+  - files:
+      - src: LICENSE
+      - src: README.md
+      - src: conf/*
+      - src: scripts/*
+      - src: templates/*
+      - src: public/*
+
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'

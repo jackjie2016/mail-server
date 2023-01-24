@@ -1,0 +1,29 @@
+{{template "base/header" .}}
+<div class="admin new user">
+	<div class="ui container">
+		<div class="ui grid">
+			{{template "admin/navbar" .}}
+			<div class="twelve wide column content">
+				{{template "base/alert" .}}
+				<h4 class="ui top attached header">
+					{{.i18n.Tr "admin.domain.add_domain"}}
+				</h4>
+				<div class="ui attached segment">
+					<form class="ui form" action="{{.Link}}" method="post">
+						{{.CSRFTokenHTML}}
+		
+						<div class="required field {{if .ErrorDomain}}error{{end}}">
+							<label for="domain">{{.i18n.Tr "admin.domain.name"}}</label>
+							<input id="domain" name="domain" value="{{.Domain}}" autofocus required>
+						</div>
+
+						<div class="field">
+							<button class="ui green button">{{.i18n.Tr "admin.domain.add_domain"}}</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{template "base/footer" .}}

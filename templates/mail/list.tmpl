@@ -1,0 +1,107 @@
+{{template "base/header" .}}
+<div class="admin user">
+	<div class="ui container">
+		<div class="ui grid">
+			{{if gt .Bid 0}}
+				{{template "mail/navbar_bid" .}}
+			{{else}}
+				{{template "mail/navbar" .}}
+			{{end}}
+
+			<div class="twelve wide column content">
+				{{template "base/alert" .}}
+				<div class="ui attached segment">
+					{{template "admin/base/search" .}}
+				</div>
+
+				<div class="ui attached segment">
+
+					<div class="ui checkbox"><input type="checkbox" name="click_option" onchange="selectAll(this)"></div>
+					
+					<div class="ui small basic icon buttons">
+					  <button class="ui button" onclick="
+					  {{if .PageIsMailDeleted}} mailHardDeleted();
+					  {{else if .PageIsMailDraft}} mailHardDeleted();
+					  {{else}}mailDeleted();
+					  {{end}}
+					  ">{{$.i18n.Tr "mail.menu.delete"}}</button>
+					</div>
+
+					<div class="ui small compact menu">
+					  <div class="ui small dropdown item">
+					  	{{$.i18n.Tr "mail.menu.sign"}}
+					    <i class="dropdown icon"></i>
+					    <div class="menu">
+					      <div class="item" onclick="mailRead(1);">{{$.i18n.Tr "mail.menu.sign_read"}}</div>
+					      <div class="item" onclick="mailRead(0);">{{$.i18n.Tr "mail.menu.sign_unread"}}</div>
+					      <div class="item">{{$.i18n.Tr "mail.menu.sign_star_red"}}</div>
+					    </div>
+					  </div>
+
+					  <div class="ui small dropdown item">
+					    {{$.i18n.Tr "mail.menu.move"}}
+					    <i class="dropdown icon"></i>
+					    <div class="menu">
+					    	<div class="item" onclick="mailMove('deleted');">{{$.i18n.Tr "mail.menu.move_deleted"}}</div>
+					     	<div class="item" onclick="mailMove('junk');">{{$.i18n.Tr "mail.menu.move_junk"}}</div>
+					    </div>
+					  </div>
+
+					  {{/*
+					  <div class="ui small dropdown item">
+					    {{$.i18n.Tr "mail.menu.more"}}
+					    <i class="dropdown icon"></i>
+					    <div class="menu">
+					      <div class="item">
+					      	<i class="dropdown icon"></i>
+					      	<span class="text">{{$.i18n.Tr "mail.menu.more_sort"}}</span>
+					      	<div class="menu">
+					      		<div class="item">{{$.i18n.Tr "mail.menu.more_sort_time_desc"}}</div>
+					      		<div class="item">{{$.i18n.Tr "mail.menu.more_sort_time_asc"}}</div>
+					      	</div>
+					      </div>
+					    </div>
+					  </div>
+					  */}}
+					</div>
+
+				</div>
+
+
+				<div class="ui unstackable attached table segment">
+					<table class="ui unstackable very basic striped table">
+						<tbody>
+						{{if .Mail}}
+						{{range .Mail}}
+						<tr>
+							<td><div class="ui checkbox"><input type="checkbox" name="mail_select" value="{{.Id}}"></div></td>
+
+							{{/* <td>{{.Id}}</td> */}}
+
+							<td><i style="cursor:pointer;" data-id="{{.Id}}" onclick="setMailStar(this);" class="star {{if not .IsFlags}}outline{{end}} icon"></i></td>
+							<td><a href="{{AppSubURL}}/mail/content/{{.Id}}">{{.MailFromInContent}}</a></td>
+							<td>{{.Subject}}</td>
+							<td>{{DateInt64FmtMail .CreatedUnix $.i18n.Lang}}</td>
+
+							{{if .IsDraft}}
+								<td><a href="{{$.Link}}/mail/new/{{.Id}}"><i class="fa fa-pencil-square-o"></i></a>
+
+								<a href="{{$.Link}}/mail/draft/delete/{{.Id}}"><i class="fa fa-times"></i></a>
+								</td>
+							{{end}}
+						</tr>
+						{{end}}
+						{{else}}
+							<tr><td colspan="5"><p class="center">{{$.i18n.Tr  "mail.list_no_data"}}</p></td></tr>
+						{{end}}
+						</tbody>
+					</table>
+				</div>
+
+				{{template "mail/page" .}}
+			</div>
+		</div>
+	</div>
+</div>
+
+{{template "base/footer" .}}

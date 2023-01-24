@@ -1,0 +1,119 @@
+{{template "base/header" .}}
+<div class="admin user">
+	<div class="ui container">
+		<div class="ui grid">
+			{{template "mail/navbar" .}}
+			<div class="twelve wide column content">
+				{{template "base/alert" .}}
+
+				<div class="ui attached segment">
+
+					<div class="ui small basic icon buttons">
+					  <button class="ui button" onclick="mailDeleted();">
+					  	<i class="fa fa-trash-o fa-fw"></i>
+					  </button>
+					</div>
+
+					
+					<div class="ui small compact menu">
+					  	<div class="ui small dropdown item">
+						  	{{$.i18n.Tr "mail.menu.sign"}}
+						    <i class="dropdown icon"></i>
+						    <div class="menu">
+						      <div class="item" onclick="mailRead(1);">{{$.i18n.Tr "mail.menu.sign_read"}}</div>
+						      <div class="item" onclick="mailRead(0);">{{$.i18n.Tr "mail.menu.sign_unread"}}</div>
+						      <div class="item">{{$.i18n.Tr "mail.menu.sign_star_red"}}</div>
+						    </div>
+					  	</div>
+
+					  	<div class="ui small dropdown item">
+						    {{$.i18n.Tr "mail.menu.move"}}
+						    <i class="dropdown icon"></i>
+						    <div class="menu">
+						    	<div class="item" onclick="mailMove('deleted');">{{$.i18n.Tr "mail.menu.move_deleted"}}</div>
+						     	<div class="item" onclick="mailMove('junk');">{{$.i18n.Tr "mail.menu.move_junk"}}</div>
+						    </div>
+					  	</div>
+
+
+					  	<div class="ui small dropdown item">
+						    {{$.i18n.Tr "mail.menu.more"}}
+						    <i class="dropdown icon"></i>
+						    <div class="menu">
+						    	<div class="item" onclick="mailExport();">{{$.i18n.Tr "mail.menu.export"}}</div>
+						    </div>
+						</div>
+					</div>
+					
+				</div>
+
+
+
+				{{if .Mail}}
+
+				<input type="hidden" name="mail_select" value="{{.Mail.Id}}" checked="checked">
+
+				<div style="padding-top:10px;">
+
+				    <table class="ui celled striped table">
+					  <tbody>
+					  	<tr>
+					      <td class="two wide column">{{$.i18n.Tr "mail.content.subject" | Safe }}</td>
+					      <td>{{.ParseMail.Subject}}</td>
+					    </tr>
+
+					    <tr>
+					      <td class="two wide column">{{$.i18n.Tr "mail.content.from"}}</td>
+					      <td>{{range .ParseMail.From}}{{.Address}}{{end}}</td>
+					    </tr>
+					    <tr>
+					      <td>{{$.i18n.Tr "mail.content.to"}}</td>
+					      <td>{{range .ParseMail.To}}{{.Address}}{{end}}</td>
+					    </tr>
+					    <tr>
+					      <td>{{$.i18n.Tr "mail.content.date" | Safe }}</td>
+					      <td>{{.ParseMail.Date}}</td>
+					    </tr>
+
+					    <tr>
+					     	<td colspan="2" style="background: white;">
+					      	{{if eq .ParseMail.HTMLBody "" }}
+								{{.ParseMail.TextBody}}
+							{{else}}
+								{{/*<iframe src="/mail/content/{{.id}}/html" style="height: auto; width: 100%;" frameborder="0"></iframe>*/}}
+								<div id="content">
+								{{.ParseMail.HTMLBody | Safe}}
+
+								<style id="ntes_link_color" type="text/css">
+								#content a,td a{color:#064977;text-decoration: none}
+								</style>
+								</div>
+							{{end}}
+						   	</td>
+					    </tr>
+
+					    {{if .ParseMail.Attachments}}
+					    <tr>
+					     	<td>{{$.i18n.Tr "mail.content.attach"}}</td>
+					      	<td>
+					      		<p>
+					      		{{range $i, $v := .ParseMail.Attachments}}
+								<a href="/mail/content/{{$.id}}/attach/{{$i}}" class="ui file button"><i class="file icon"></i>{{.Filename}}</a>
+								{{end}}
+								</p>
+					      	</td>
+					    </tr>
+					    {{end}}
+
+					  </tbody>
+					</table>
+				
+				</div>
+				{{end}}
+
+			</div>
+		</div>
+	</div>
+</div>
+
+{{template "base/footer" .}}
